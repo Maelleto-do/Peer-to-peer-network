@@ -1,12 +1,14 @@
 README pour l'utilisation du projet de peer-to-peer
+
 (by P. Chevallier, C. Bertin, M. Toy-Riont, C. Le Métayer)
 
+Application pour le partage de fichiers en mode pair à pair.
 Seul le dossier 'central' contient du code. /!\ Se placer dans le dossier 'central' /!\
 
 
 ## Configuration du tracker et des peers
 
-'make configuration' lance une interface graphique pour configurer les paramètres du tracker (fichier Config/config_tracker.ini)
+```make configuration``` lance une interface graphique pour configurer les paramètres du tracker (fichier Config/config_tracker.ini)
 
 Permet d'ajouter des peers et d'update leurs paramètres (fichier Config/config_peerXXXX.ini)
 
