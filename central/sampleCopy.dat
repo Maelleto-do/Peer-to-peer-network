@@ -1,0 +1,88 @@
+Application d’échange de Fichiers en Pair à Pair (FileShare)
+
+
+Description du projet :
+Le but du projet est de développer une application pour le partage de fichiers en mode pair à pair. Un réseau pair-à-pair (ou P2P : Peer-to-Peer) est constitué d’un ensemble d’ordinateurs (processus) connectées entre eux. Pour le partage de fichier en P2P, un pair est à la fois serveur et client des autres pairs. Dans un tel réseau on peut identifier deux types de pairs :
+Les fournisseurs (ou « seeders ») : sont des pairs qui ont la totalité du fichier et le partagent avec les autres pairs.
+Les consommateurs (ou « leechers ») : sont des pairs qui sont en train de télécharger le fichier ou des parties du fichier.
+Ainsi, les deux types de pairs peuvent contribuer : les seeders par la totalité du fichier et les leechers par la(les) partie(s) qu’ils détiennent (ce comportement est voulu dans certaines applications P2P comme BitTorrent afin de décharger les seeders, peu nombreux, et faire contribuer les leechers dès le début du téléchargement).
+Travail demandé :
+Ce sujet décrit uniquement le protocole que votre programme devra implémenter. Le but final est que tous vos programmes puissent communiquer entre eux :
+Les communications entre pairs se feront en TCP.
+Les messages échangés entre les différents pairs seront sous la forme de texte là où c’est applicable (tous sera codé en texte sauf les données binaires).
+Le caractère « blanc » servira comme séparateur entre les différents champs d’un message. Une liste de champs sera mise entre "["  et "]" .
+Pour l’échange des données, les pairs s’échangent des « pièces » du fichier (i.e. des parties de fichier). Un fichier est décomposé en pièces de données de taille égale. Cette taille, fait partie des informations décrivant le fichier.
+
+Version Centralisée :
+Dans la version dite centralisée, une entité centrale (Tracker) sera implémentée conjointement avec les programmes clients. Le Tracker assiste les différents pairs dans la recherche des fichiers à télécharger, mais aussi dans la découverte des autres pairs. Le Tracker est connu de tous les pairs.
+L’interaction entre les programmes est illustrée dans la figure suivante dans la version centralisée :
+
+
+
+L’utilisateur DOIT pouvoir :
+Spécifier le port d’écoute du Tracker à son lancement.
+Spécifier les informations de connexion du Tracker au Client P2P en ligne de commande ou dans un fichier de configuration.
+Le symbole “<” indique la commande envoyée et le symbole “ >” la réponse reçue.
+Le Hash est calculé par MD5 (voir md5sum)
+
+Protocole de Communications Pair- Tracker :
+Au début, chaque pair commence par annoncer sa présence au Tracker ainsi que la liste des fichiers qu’il possède. De cette manière, le Tracker a une vue globale des différents fichiers présents dans le réseau.
+
+< announce listen $Port seed [$Filename1 $Length1 $PieceSize1 $Key1 $Filename2 $Length2 $PieceSize2 $Key2 …] leech [$Key3 $Key4 …]
+ > ok
+
+L’utilisateur DOIT pouvoir spécifier le port d’écoute utilisé par le pair au lancement de l’application ou dans un fichier de configuration.
+Une option serait de choisir un port disponible d’une manière automatique au démarrage de l’application.
+
+
+Exemple:
+< announce listen 2222 seed [file_a.dat 2097152 1024 8905e92afeb80fc7722ec89eb0bf0966 file_b.dat 3145728 1536 330a57722ec8b0bf09669a2b35f88e9e]
+> ok
+Ici le pair annonce au Tracker, qu’il est en écoute sur le port 2222 et qu’il possède deux fichiers :
+« file_a.dat » dont la taille est de 2097152 octets (2Mo), découpé en pièce de 1024 octets (1Ko), et ayant comme clé: 8905e92afeb80fc7722ec89eb0bf0966.
+« file_b.dat » dont la taille est de 3145728 octets (3Mo), découpé en pièce de 1536 octets (1,5Ko), et ayant comme clé: 330a57722ec8b0bf09669a2b35f88e9e.
+
+
+Un pair peut à tout moment demander au Tracker la liste des fichiers présents dans le réseau vérifiant un certain nombre de critères eux-mêmes transmis en paramètre.
+
+ < look [$Criterion1 $Criterion2 …]
+ > list [$Filename1 $Length1 $PieceSize1 $Key1 $Filename2 $Length2 $PieceSize2 $Key2 …]
+Le critère d’égalité de nom de fichier DOIT être implémenté, d’autres critères peuvent être implémentés en option.
+
+Exemple:
+< look [filename=”file_a.dat” filesize>”1048576”]
+> list [file_a.dat 2097152 1024 8905e92afeb80fc7722ec89eb0bf0966]
+Le pair demande au Tracker la liste de fichiers dont le nom est «file_a.dat » et dont la taille est supérieure à 1048576 octets (1Mo).
+Le Tracker répond avec une liste qui ne contient qu’un seul fichier satisfaisant les critères.
+
+Si le pair est intéressé par un certain fichier, il pourra demander son téléchargement au Tracker. Le Tracker devra alors fournir au client la liste des pairs possédant la totalité ou une partie du fichier en question ainsi que les informations nécessaires pour se connecter à ces pairs ci.
+ < getfile $Key
+ > peers $Key [$IP1:$Port1 $IP2:$Port2 …]
+
+Exemple:
+< getfile 8905e92afeb80fc7722ec89eb0bf0966
+> peers 8905e92afeb80fc7722ec89eb0bf0966 [1.1.1.2:2222 1.1.1.3:3333]
+Le pair demande au Tracker la liste des pairs partageant le fichier dont la clé est 8905e92afeb80fc7722ec89eb0bf0966.
+Le Tracker répond avec une liste des pairs ainsi que leurs adresses IP et numéros de Port. (1.1.1.2 :2222 et 1.1.1.3 :3333)
+
+
+
+Protocole de Communications Pair- Pair :
+
+Après avoir obtenu la liste des pairs auxquels se connecter, le pair initiera une connexion avec chacun de ces pairs leur indiquant son intérêt pour le fichier désiré. Les pairs devront alors répondre avec des informations (BufferMap) concernant les parties du fichier qu’ils ont en leur possession.
+Le nombre de pairs maximum auxquels se connecter DOIT être paramétrable et stocké dans un fichier de configuration (par exemple, 5 pairs par défaut)
+
+ < interested $Key
+ > have $Key $BufferMap
+Le buffermap est une séquence de bits dont le nombre correspond au nombre des pièces du fichier. Chaque bit indique la présence de la pièce correspondante dans le buffer.
+
+
+Exemple:
+< interested 8905e92afeb80fc7722ec89eb0bf0966
+> have 8905e92afeb80fc7722ec89eb0bf0966 %buffermap%
+Le pair informe son voisin qu’il est intéressé par le fichier dont la clé est 8905e92afeb80fc7722ec89eb0bf0966.
+Le voisin lui répond avec son buffermap (une séquence d’octets en binaire). Comme le fichier fait 2Mo et est découpé en pièces de 1Ko, on aura 2048 pièces. Pour représenter la présence de ces pièces dans le buffermap, on aura besoin de 2048bits et donc [2048/8] = 256 octets.
+
+Le pair demande ensuite les différentes pièces du fichier selon leur disponibilité au niveau des autres pairs.
+ < getpieces $Key [$Index1 $Index2 $Index3 …]
+ > data $Key [$Index1:$Piece1 $Index2:$Piece2 $Index3:$Piece3 …]

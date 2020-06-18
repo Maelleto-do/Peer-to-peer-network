@@ -1,0 +1,3 @@
+[2020/05/23 16:25:04] < announce listen on port 8000 seed [] sent to null:0
+[2020/05/23 16:25:04] > OK received from 127.0.0.1:9000
+[2020/05/23 16:35:04] < update seed [] leech [] sent to 127.0.0.1:9000

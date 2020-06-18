@@ -1,0 +1,10 @@
+[2020/05/23 16:25:00] < announce listen on port 7000 seed [] sent to null:0
+[2020/05/23 16:25:00] > OK received from 127.0.0.1:9000
+[2020/05/23 16:26:00] < look [filename="peer/files/sample.dat" filesize>"0"] sent to 127.0.0.1:9000
+[2020/05/23 16:26:00] > list [] received from 127.0.0.1:9000
+[2020/05/23 16:26:59] < announce listen on port 7000 seed [] sent to null:0
+[2020/05/23 16:26:59] > OK received from 127.0.0.1:9000
+[2020/05/23 16:27:25] < look [filename="sample.dat" filesize>"0"] sent to 127.0.0.1:9000
+[2020/05/23 16:27:25] > list [] received from 127.0.0.1:9000
+[2020/05/23 16:28:13] < announce listen on port 7000 seed [] sent to null:0
+[2020/05/23 16:28:13] > OK received from 127.0.0.1:9000

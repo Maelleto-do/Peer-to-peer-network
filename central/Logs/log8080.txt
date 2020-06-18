@@ -1,0 +1,18 @@
+[Sat May 23 16:25:00 2020] request announce listen on port 7000 seed [] received from localhost:1111
+[Sat May 23 16:25:00 2020] response OK sent to localhost:1111
+[Sat May 23 16:25:04 2020] request announce listen on port 8000 seed [] received from localhost:1111
+[Sat May 23 16:25:04 2020] response OK sent to localhost:1111
+[Sat May 23 16:26:00 2020] request look [filename="peer/files/sample.dat" filesize>"0"] received from localhost:1111
+[Sat May 23 16:26:00 2020] response list [] sent to localhost:1111
+[Sat May 23 16:26:05 2020] request  received from localhost:1111
+[Sat May 23 16:26:05 2020] response OK sent to localhost:1111
+[Sat May 23 16:26:05 2020] request  received from localhost:1111
+[Sat May 23 16:26:59 2020] request announce listen on port 7000 seed [] received from localhost:1111
+[Sat May 23 16:26:59 2020] response OK sent to localhost:1111
+[Sat May 23 16:27:25 2020] request look [filename="sample.dat" filesize>"0"] received from localhost:1111
+[Sat May 23 16:27:25 2020] response list [] sent to localhost:1111
+[Sat May 23 16:27:35 2020] request  received from localhost:1111
+[Sat May 23 16:27:35 2020] response OK sent to localhost:1111
+[Sat May 23 16:27:35 2020] request  received from localhost:1111
+[Sat May 23 16:28:13 2020] request announce listen on port 7000 seed [] received from localhost:1111
+[Sat May 23 16:28:13 2020] response OK sent to localhost:1111
